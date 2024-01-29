@@ -26,25 +26,42 @@
 
 
 const form = document.forms[0];
-let option = form.elements.name;
-let id = form.elements.id;
+const option = form.elements.name;
+const id = form.elements.id;
+let optionValue = "";
+let idValue = "";
+
 console.log(option);
 console.log(id);
 
-//     function showText() {
-// 	fetch('https://swapi.dev/api/${option.value}/${id.value}', {
-// 		method: 'GET'
-// 	})
-// 	.then(response => response.json())
-// 	.then((data) => {
-//         const info = document.querySelector(".info");
-//         data.forEach(element => {
-//             info.innerHTML += `
-//                 <p>Text: ${element}</p>
-//                 `
-//         });
-//     })
-// 	.catch(error => console.log(error));
+function showText() {
+    form.addEventListener("change", function text (event) {
+        if (event.target.name === "name") {
+            optionValue = event.target.value;
+            console.log(option.value);
+        } 
+        else if  (event.target.name === "id") {
+            idValue = event.target.value;
+            console.log(id.value);
+        } else console.log("Err")
+            }) 
 
-// }
-// document.querySelector('.button').addEventListener('click', showText);
+	fetch(`https://swapi.dev/api/${option.value}/${id.value}`, {
+		method: 'GET'
+	})
+	.then(response => response.json())
+	.then((data) => {
+        const info = document.querySelector(".info");
+            info.innerHTML = `
+                <p>Name: ${data.name}</p>
+                `
+        console.log(data)
+    })
+	.catch(error => {
+        info.innerHTML = `
+        <p>Ошибка: ${error.name}</p>
+        `
+    })
+
+}
+document.querySelector('.button').addEventListener('click', showText);
