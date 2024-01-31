@@ -24,44 +24,52 @@
 //     Запрос должен уходить на сервер при нажатии на кнопку (нужно добавить обработчик). В разметке HTML должно быть минимум два поля: в первое нужно выводить результат поиска, если данные пришли и всё хорошо, во втором — ошибку, если что-то пошло не так. (Добейтесь, чтобы ваше приложение выводило понятные пользователю сообщения в случае ошибки, например «Сервер не доступен»). Сообщения должны быть видны поочередно, если результат показан, ошибка должна быть сброшена. И наоборот. Обязательно добавьте обработчик ответа: если ответ успешный, следующий обработчик `then` получит объект ответа на вход, если с ответом что-то не так, отклоните промис (для этого верните `Promise.reject` с кодом статуса ответа). Блок `catch` и `finally` использовать обязательно.
 //     Хороший интерфейс сообщает пользователю, что идёт загрузка надписью «Идёт загрузка» или крутящимся лоадером пока идёт запрос. Если хотите улучшить ваше приложение, то вы можете также реализовать этот функционал.
 
+const selectElement = document.getElementById("name");
+const id = document.getElementById("id");
+const info = document.querySelector(".info");
 
-const form = document.forms[0];
-const option = form.elements.name;
-const id = form.elements.id;
-let optionValue = "";
-let idValue = "";
+async function showText() {
+    info.textContent = "Processing..."
+    try {
+        await getInfo();
+    } catch(error) {
+        info.textContent = `${error}`;
+    }
+    finally {
+        console.log("The asynchronous operation has completed successfully");
+    }
+}
 
-console.log(option);
-console.log(id);
+    function getInfo() {
 
-function showText() {
-    form.addEventListener("change", function text (event) {
-        if (event.target.name === "name") {
-            optionValue = event.target.value;
-            console.log(option.value);
-        } 
-        else if  (event.target.name === "id") {
-            idValue = event.target.value;
-            console.log(id.value);
-        } else console.log("Err")
-            }) 
-
-	fetch(`https://swapi.dev/api/${option.value}/${id.value}`, {
-		method: 'GET'
-	})
-	.then(response => response.json())
-	.then((data) => {
-        const info = document.querySelector(".info");
-            info.innerHTML = `
-                <p>Name: ${data.name}</p>
-                `
-        console.log(data)
+        return new Promise((resolve, reject) => {
+            let selectedOption = selectElement.options[selectElement.selectedIndex];
+            if (0 > id.value || id.value > 11 || id.value === '') {
+                reject(new Error('Choose number from 1 to 10'));
+		} else if (selectedOption.value === "films"){
+            reject(new Error('This option has no name'));
+        }
+        else {
+            resolve(
+                fetch(`https://swapi.dev/api/${selectedOption.value}/${id.value}`, {
+                    method: 'GET'
+                })
+                .then(response => response.json())
+                .then((data) => {
+                        info.innerHTML = `
+                            <p>Name: ${data.name}</p>
+                            `
+                })
+                .catch(error => {
+                    info.innerHTML = `
+                    <p>Error: ${error}</p>
+                    `
+                })
+            )
+        }
     })
-	.catch(error => {
-        info.innerHTML = `
-        <p>Ошибка: ${error.name}</p>
-        `
-    })
-
 }
 document.querySelector('.button').addEventListener('click', showText);
+
+
+
