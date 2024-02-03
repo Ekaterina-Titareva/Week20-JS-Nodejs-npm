@@ -57,12 +57,12 @@ async function showText() {
                 .then(response => response.json())
                 .then((data) => {
                         info.innerHTML = `
-                            <p>Name: ${data.name}</p>
+                            <p class="text">Name: ${data.name}</p>
                             `
                 })
                 .catch(error => {
                     info.innerHTML = `
-                    <p>Error: ${error}</p>
+                    <p class="red">Error: ${error}</p>
                     `
                 })
             )
