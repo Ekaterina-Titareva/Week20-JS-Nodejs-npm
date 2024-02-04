@@ -44,7 +44,7 @@ async function showText() {
 
         return new Promise((resolve, reject) => {
             let selectedOption = selectElement.options[selectElement.selectedIndex];
-            if (0 > id.value || id.value > 11 || id.value === '') {
+            if (0 > id.value || id.value > 10 || id.value === '') {
                 reject(new Error('Choose number from 1 to 10'));
 		} else if (selectedOption.value === "films"){
             reject(new Error('This option has no name'));
